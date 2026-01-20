@@ -1,0 +1,39 @@
+import { ref, watch } from 'vue'
+
+export function useLocalStorage<T>(key: string, defaultValue: T) {
+  const storedValue = localStorage.getItem(key)
+  const data = ref<T>(storedValue ? JSON.parse(storedValue) : defaultValue)
+
+  watch(data, (newValue) => {
+    localStorage.setItem(key, JSON.stringify(newValue))
+  }, { deep: true })
+
+  const remove = () => {
+    localStorage.removeItem(key)
+    data.value = defaultValue
+  }
+
+  return {
+    data,
+    remove,
+  }
+}
+
+export function useSessionStorage<T>(key: string, defaultValue: T) {
+  const storedValue = sessionStorage.getItem(key)
+  const data = ref<T>(storedValue ? JSON.parse(storedValue) : defaultValue)
+
+  watch(data, (newValue) => {
+    sessionStorage.setItem(key, JSON.stringify(newValue))
+  }, { deep: true })
+
+  const remove = () => {
+    sessionStorage.removeItem(key)
+    data.value = defaultValue
+  }
+
+  return {
+    data,
+    remove,
+  }
+}
